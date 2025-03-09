@@ -2,9 +2,9 @@
     "target": "esp32s3",
     "builds": [
         {
-            "name": "df-k10",
+            "name": "bread-compact-wifi-lcd-172x320",
             "sdkconfig_append": [
-                "CONFIG_SPIRAM_MODE_OCT=y","CONFIG_SPIRAM_MODE_QUAD=n"
+                "CONFIG_LCD_ST7789_172X320=y"
             ]
         }
     ]

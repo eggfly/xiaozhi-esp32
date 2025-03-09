@@ -1,6 +1,7 @@
 #include "no_audio_codec.h"
 
 #include <esp_log.h>
+#include <esp_err.h>
 #include <cmath>
 #include <cstring>
 
@@ -137,6 +138,7 @@ NoAudioCodecSimplex::NoAudioCodecSimplex(int input_sample_rate, int output_sampl
     input_sample_rate_ = input_sample_rate;
     output_sample_rate_ = output_sample_rate;
 
+    ESP_LOGI(TAG, "== NoAudioCodecSimplex: 10");
     // Create a new channel for speaker
     i2s_chan_config_t chan_cfg = {
         .id = (i2s_port_t)0,
@@ -147,8 +149,12 @@ NoAudioCodecSimplex::NoAudioCodecSimplex(int input_sample_rate, int output_sampl
         .auto_clear_before_cb = false,
         .intr_priority = 0,
     };
-    ESP_ERROR_CHECK(i2s_new_channel(&chan_cfg, &tx_handle_, nullptr));
+    ESP_LOGI(TAG, "== NoAudioCodecSimplex: 200");
+    esp_err_t err1 = i2s_new_channel(&chan_cfg, &tx_handle_, nullptr);
+    ESP_LOGI(TAG, "== NoAudioCodecSimplex: err=%d", err1);
+    ESP_ERROR_CHECK(err1);
 
+    ESP_LOGI(TAG, "== NoAudioCodecSimplex: 30");
     i2s_std_config_t std_cfg = {
         .clk_cfg = {
             .sample_rate_hz = (uint32_t)output_sample_rate_,
@@ -187,17 +193,20 @@ NoAudioCodecSimplex::NoAudioCodecSimplex(int input_sample_rate, int output_sampl
             }
         }
     };
+    ESP_LOGI(TAG, "== NoAudioCodecSimplex: 40");
     ESP_ERROR_CHECK(i2s_channel_init_std_mode(tx_handle_, &std_cfg));
 
     // Create a new channel for MIC
     chan_cfg.id = (i2s_port_t)1;
     ESP_ERROR_CHECK(i2s_new_channel(&chan_cfg, nullptr, &rx_handle_));
+    ESP_LOGI(TAG, "== NoAudioCodecSimplex: 50");
     std_cfg.clk_cfg.sample_rate_hz = (uint32_t)input_sample_rate_;
     std_cfg.gpio_cfg.bclk = mic_sck;
     std_cfg.gpio_cfg.ws = mic_ws;
     std_cfg.gpio_cfg.dout = I2S_GPIO_UNUSED;
     std_cfg.gpio_cfg.din = mic_din;
     ESP_ERROR_CHECK(i2s_channel_init_std_mode(rx_handle_, &std_cfg));
+    ESP_LOGI(TAG, "== NoAudioCodecSimplex: 60");
     ESP_LOGI(TAG, "Simplex channels created");
 }
 
@@ -216,7 +225,10 @@ NoAudioCodecSimplex::NoAudioCodecSimplex(int input_sample_rate, int output_sampl
         .auto_clear_before_cb = false,
         .intr_priority = 0,
     };
-    ESP_ERROR_CHECK(i2s_new_channel(&chan_cfg, &tx_handle_, nullptr));
+    esp_err_t err1 = i2s_new_channel(&chan_cfg, &tx_handle_, nullptr);
+    ESP_LOGI(TAG, "=== channels %d", err1);
+
+    ESP_ERROR_CHECK(err1);
 
     i2s_std_config_t std_cfg = {
         .clk_cfg = {

@@ -727,10 +727,15 @@ void Application::SetDeviceState(DeviceState state) {
     background_task_->WaitForCompletion();
 
     auto& board = Board::GetInstance();
+    ESP_LOGI(TAG, "== PROGRESS: 10");
     auto codec = board.GetAudioCodec();
+    ESP_LOGI(TAG, "== PROGRESS: 20");
     auto display = board.GetDisplay();
+    ESP_LOGI(TAG, "== PROGRESS: 30");
     auto led = board.GetLed();
+    ESP_LOGI(TAG, "== PROGRESS: 40");
     led->OnStateChanged();
+    ESP_LOGI(TAG, "== PROGRESS: 50");
     switch (state) {
         case kDeviceStateUnknown:
         case kDeviceStateIdle:
@@ -771,6 +776,7 @@ void Application::SetDeviceState(DeviceState state) {
             // Do nothing
             break;
     }
+    ESP_LOGI(TAG, "== PROGRESS: 100");
 }
 
 void Application::SetDecodeSampleRate(int sample_rate) {
