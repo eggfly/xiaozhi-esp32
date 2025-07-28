@@ -69,6 +69,16 @@ private:
     Button boot_button_;
     LcdDisplay* display_;
 
+    void EnableHeadPhone() {
+        gpio_config_t io_conf = {
+          .pin_bit_mask = BIT64(AUDIO_ENABLE_GPIO), // (1ULL << PIN)
+          .mode = GPIO_MODE_OUTPUT,
+          .pull_up_en = GPIO_PULLUP_DISABLE,
+      };
+
+      gpio_config(&io_conf);
+      gpio_set_level(AUDIO_ENABLE_GPIO, 1);
+  }
     void InitializeSpi() {
         spi_bus_config_t buscfg = {};
         buscfg.mosi_io_num = DISPLAY_MOSI_PIN;
@@ -156,8 +166,9 @@ private:
 public:
     CompactWifiBoardLCD() :
         boot_button_(BOOT_BUTTON_GPIO) {
-        InitializeSpi();
-        InitializeLcdDisplay();
+        // InitializeSpi();
+        // InitializeLcdDisplay();
+        EnableHeadPhone();
         InitializeButtons();
         InitializeTools();
         if (DISPLAY_BACKLIGHT_PIN != GPIO_NUM_NC) {
@@ -166,10 +177,10 @@ public:
         
     }
 
-    virtual Led* GetLed() override {
-        static SingleLed led(BUILTIN_LED_GPIO);
-        return &led;
-    }
+    // virtual Led* GetLed() override {
+    //     static SingleLed led(BUILTIN_LED_GPIO);
+    //     return &led;
+    // }
 
     virtual AudioCodec* GetAudioCodec() override {
 #ifdef AUDIO_I2S_METHOD_SIMPLEX
@@ -182,17 +193,17 @@ public:
         return &audio_codec;
     }
 
-    virtual Display* GetDisplay() override {
-        return display_;
-    }
+    // virtual Display* GetDisplay() override {
+    //     return display_;
+    // }
 
-    virtual Backlight* GetBacklight() override {
-        if (DISPLAY_BACKLIGHT_PIN != GPIO_NUM_NC) {
-            static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
-            return &backlight;
-        }
-        return nullptr;
-    }
+    // virtual Backlight* GetBacklight() override {
+    //     if (DISPLAY_BACKLIGHT_PIN != GPIO_NUM_NC) {
+    //         static PwmBacklight backlight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT);
+    //         return &backlight;
+    //     }
+    //     return nullptr;
+    // }
 };
 
 DECLARE_BOARD(CompactWifiBoardLCD);
